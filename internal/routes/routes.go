@@ -15,6 +15,11 @@ func RegisterRoutes() *mux.Router {
 	// Serve web interface
 	router.PathPrefix("/web/").Handler(http.StripPrefix("/web/", http.FileServer(http.Dir("./web"))))
 
+	// Serve the main index at root to make the web UI available at '/'
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./web/index.html")
+	}).Methods("GET")
+
 	// Public routes (no authentication needed)
 	router.HandleFunc("/login", handler.Login).Methods("POST")
 	router.HandleFunc("/create", handler.CreateUser).Methods("POST")
